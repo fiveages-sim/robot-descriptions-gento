@@ -1,0 +1,257 @@
+; OCS2 Dual-Arm Configuration - gento_luna (demo)
+; demo → ocs2_arm_controller (info_file_name:=task_arm)
+; 14 arm DOF, root arm_base.
+
+model_information {
+  manipulatorModelType     0
+
+  removeJoints {
+      [0]  "left_gripper_joint"
+      [1]  "right_gripper_joint"
+      [2]  "rr_steer_joint"
+      [3]  "rr_wheel_joint"
+      [4]  "rl_steer_joint"
+      [5]  "rl_wheel_joint"
+      [6]  "fr_steer_joint"
+      [7]  "fr_wheel_joint"
+      [8]  "fl_steer_joint"
+      [9]  "fl_wheel_joint"
+      [10] "head_joint1"
+      [11] "head_joint2"
+      [12] "body_joint1"
+      [13] "body_joint2"
+      [14] "body_joint3"
+      [15] "body_joint4"
+      [16] "body_joint5"
+      [17] "body_joint6"
+  }
+
+  baseFrame                       "arm_base"
+  eeFrame                         "left_tcp"
+  eeFrame1                        "right_tcp"
+}
+
+model_settings
+{
+  usePreComputation               true
+  recompileLibraries              true
+}
+
+ddp
+{
+  algorithm                       SLQ
+  nThreads                        3
+  threadPriority                  50
+  maxNumIterations                1
+  minRelCost                      0.1
+  constraintTolerance             1e-3
+  displayInfo                     false
+  displayShortSummary             false
+  checkNumericalStability         false
+  debugPrintRollout               false
+  debugCaching                    false
+  AbsTolODE                       1e-5
+  RelTolODE                       1e-3
+  maxNumStepsPerSecond            100000
+  timeStep                        1e-3
+  backwardPassIntegratorType      ODE45
+  constraintPenaltyInitialValue   20.0
+  constraintPenaltyIncreaseRate   2.0
+  preComputeRiccatiTerms          true
+  useFeedbackPolicy               false
+  strategy                        LINE_SEARCH
+  lineSearch
+  {
+    minStepLength                 1e-2
+    maxStepLength                 1.0
+    hessianCorrectionStrategy     DIAGONAL_SHIFT
+    hessianCorrectionMultiple     1e-3
+  }
+}
+
+rollout
+{
+  AbsTolODE                       1e-5
+  RelTolODE                       1e-3
+  timeStep                        1e-2
+  integratorType                  ODE45
+  maxNumStepsPerSecond            100000
+  checkNumericalStability         false
+}
+
+mpc
+{
+  timeHorizon                     1.0
+  solutionTimeWindow              0.2
+  coldStart                       false
+  debugPrint                      false
+  mpcDesiredFrequency             100
+  mrtDesiredFrequency             400
+}
+
+initialState
+{
+  base
+  {
+    defaultManipulator {}
+    wheelBasedMobileManipulator
+    {
+      (0,0)  0.0
+      (1,0)  0.0
+      (2,0)  0.0
+    }
+  }
+  arm
+  {
+        (0,0)   0.0     ; left_joint1
+        (1,0)   0.0     ; left_joint2
+        (2,0)   0.0     ; left_joint3
+        (3,0)   0.0     ; left_joint4
+        (4,0)   0.0     ; left_joint5
+        (5,0)   0.0     ; left_joint6
+        (6,0)   0.0     ; left_joint7
+        (7,0)   0.0     ; right_joint1
+        (8,0)   0.0     ; right_joint2
+        (9,0)   0.0     ; right_joint3
+        (10,0)   0.0     ; right_joint4
+        (11,0)   0.0     ; right_joint5
+        (12,0)   0.0     ; right_joint6
+        (13,0)   0.0     ; right_joint7
+  }
+}
+
+inputCost
+{
+  R
+  {
+    base
+    {
+      defaultManipulator {}
+      wheelBasedMobileManipulator
+      {
+        scaling 1e-2
+        (0,0)  5.0
+        (1,1)  5.0
+      }
+    }
+    arm
+    {
+      scaling 1e-3
+            (0,0)   5.0     ; left_joint1 velocity
+            (1,1)   5.0     ; left_joint2 velocity
+            (2,2)   5.0     ; left_joint3 velocity
+            (3,3)   5.0     ; left_joint4 velocity
+            (4,4)   5.0     ; left_joint5 velocity
+            (5,5)   5.0     ; left_joint6 velocity
+            (6,6)   5.0     ; left_joint7 velocity
+            (7,7)   5.0     ; right_joint1 velocity
+            (8,8)   5.0     ; right_joint2 velocity
+            (9,9)   5.0     ; right_joint3 velocity
+            (10,10)   5.0     ; right_joint4 velocity
+            (11,11)   5.0     ; right_joint5 velocity
+            (12,12)   5.0     ; right_joint6 velocity
+            (13,13)   5.0     ; right_joint7 velocity
+    }
+  }
+}
+
+endEffector
+{
+  dualArmMode      true
+  leftArm { muPosition 10.0 muOrientation 5.0 }
+  rightArm { muPosition 10.0 muOrientation 5.0 }
+}
+
+finalEndEffector
+{
+  dualArmMode      true
+  leftArm { muPosition 10.0 muOrientation 5.0 }
+  rightArm { muPosition 10.0 muOrientation 5.0 }
+}
+
+selfCollision
+{
+  activate  true
+  collisionObjectPairs {}
+  collisionLinkPairs
+  {
+      [0] "arm_base, left_link5",
+      [1] "arm_base, left_link7",
+      [2] "arm_base, right_link5",
+      [3] "arm_base, right_link7",
+  }
+  minimumDistance  0.025
+  mu      1e-3
+  delta   1e-2
+}
+
+jointPositionLimits
+{
+  activate  true
+  mu      1e-3
+  delta   1e-3
+}
+
+jointVelocityLimits
+{
+  mu      0.01
+  delta   1e-3
+  lowerBound
+  {
+    base
+    {
+      defaultManipulator {}
+      wheelBasedMobileManipulator
+      {
+        (0,0)  -0.1
+        (1,0)  -0.3
+      }
+    }
+    arm
+    {
+            (0,0)  -1.67         ; left_joint1
+            (1,0)  -1.67         ; left_joint2
+            (2,0)  -1.67         ; left_joint3
+            (3,0)  -1.67         ; left_joint4
+            (4,0)  -1.67         ; left_joint5
+            (5,0)  -1.67         ; left_joint6
+            (6,0)  -1.67         ; left_joint7
+            (7,0)  -1.67         ; right_joint1
+            (8,0)  -1.67         ; right_joint2
+            (9,0)  -1.67         ; right_joint3
+            (10,0)  -1.67         ; right_joint4
+            (11,0)  -1.67         ; right_joint5
+            (12,0)  -1.67         ; right_joint6
+            (13,0)  -1.67         ; right_joint7
+    }
+  }
+  upperBound
+  {
+    base
+    {
+      defaultManipulator {}
+      wheelBasedMobileManipulator
+      {
+        (0,0)  0.1
+        (1,0)  0.3
+      }
+    }
+    arm
+    {
+            (0,0)  1.67         ; left_joint1
+            (1,0)  1.67         ; left_joint2
+            (2,0)  1.67         ; left_joint3
+            (3,0)  1.67         ; left_joint4
+            (4,0)  1.67         ; left_joint5
+            (5,0)  1.67         ; left_joint6
+            (6,0)  1.67         ; left_joint7
+            (7,0)  1.67         ; right_joint1
+            (8,0)  1.67         ; right_joint2
+            (9,0)  1.67         ; right_joint3
+            (10,0)  1.67         ; right_joint4
+            (11,0)  1.67         ; right_joint5
+            (12,0)  1.67         ; right_joint6
+            (13,0)  1.67         ; right_joint7
+    }
+  }
+}

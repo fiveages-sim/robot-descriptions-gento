@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<robot name="Gento Luna" xmlns:xacro="http://www.ros.org/wiki/xacro">
+	<xacro:arg name="type" default="head"/>
+	<xacro:arg name="collider" default="simple"/>
+
+	<xacro:if value="${'$(arg type)' == 'head'}">
+		<link name="head_mount"/>
+		<xacro:include filename="$(find gento_luna_description)/xacro/components/head.xacro"/>
+		<xacro:head collider="$(arg collider)"/>
+	</xacro:if>
+
+	<xacro:if value="${'$(arg type)' == 'torso'}">
+		<link name="base_link"/>
+		<xacro:include filename="$(find gento_luna_description)/xacro/components/torso.xacro"/>
+		<xacro:torso collider="$(arg collider)"/>
+	</xacro:if>
+</robot>

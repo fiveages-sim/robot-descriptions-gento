@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<robot name="Gento Skye Head" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+	<xacro:property name="PI" value="3.1415926535897931"/>
+
+	<!-- 2-DOF yaw/pitch from Skye CAD. Mount xyz (no extra rpy) is owned by waist. -->
+	<xacro:macro name="head" params="collider:='simple'">
+		<link name="head_link1">
+			<inertial>
+				<origin xyz="-0.00036181 -0.012522 -0.017538"/>
+				<mass value="1.3932"/>
+				<inertia
+						ixx="0.0032973" ixy="6.6693E-06" ixz="-4.9573E-05"
+						iyy="0.003207" iyz="0.00030602" izz="0.0016203"/>
+			</inertial>
+			<visual>
+				<geometry>
+					<mesh filename="file://$(find gento_skye_description)/meshes/head/head_yaw.glb"/>
+				</geometry>
+			</visual>
+			<xacro:if value="${collider == 'convex'}">
+				<collision>
+					<geometry>
+						<mesh filename="file://$(find gento_skye_description)/meshes/head/head_yaw.glb"/>
+					</geometry>
+				</collision>
+			</xacro:if>
+			<xacro:if value="${collider == 'simple'}">
+				<collision>
+					<origin xyz="0 -0.016 -0.024"/>
+					<geometry>
+						<box size="0.10 0.094 0.148"/>
+					</geometry>
+				</collision>
+			</xacro:if>
+		</link>
+
+		<joint name="head_joint1" type="revolute">
+			<origin xyz="0 0 0"/>
+			<parent link="head_mount"/>
+			<child link="head_link1"/>
+			<axis xyz="0 0 1"/>
+			<limit lower="-${PI/2}" upper="${PI/2}" effort="22" velocity="3.14"/>
+		</joint>
+
+		<link name="head_link2">
+			<inertial>
+				<origin xyz="0.05658 0.029152 -0.018873"/>
+				<mass value="1.0577"/>
+				<inertia
+						ixx="0.00480604" ixy="0.0009986" ixz="0.00088202"
+						iyy="0.00414727" iyz="0.00057025" izz="0.0053477"/>
+			</inertial>
+			<visual>
+				<geometry>
+					<mesh filename="file://$(find gento_skye_description)/meshes/head/head_pitch.glb"/>
+				</geometry>
+			</visual>
+			<xacro:if value="${collider == 'convex'}">
+				<collision>
+					<geometry>
+						<mesh filename="file://$(find gento_skye_description)/meshes/head/head_pitch.glb"/>
+					</geometry>
+				</collision>
+			</xacro:if>
+			<xacro:if value="${collider == 'simple'}">
+				<collision>
+					<origin xyz="0.034 0.044 0"/>
+					<geometry>
+						<box size="0.169 0.198 0.15"/>
+					</geometry>
+				</collision>
+			</xacro:if>
+		</link>
+
+		<joint name="head_joint2" type="revolute">
+			<origin xyz="0 0 0" rpy="${PI/2} 0 0"/>
+			<parent link="head_link1"/>
+			<child link="head_link2"/>
+			<axis xyz="0 0 1"/>
+			<limit lower="-0.6109" upper="0.4363" effort="22" velocity="3.14"/>
+		</joint>
+	</xacro:macro>
+
+</robot>

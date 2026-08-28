@@ -1,0 +1,173 @@
+<?xml version="1.0"?>
+<robot name="Gento Skye Waist" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+	<xacro:property name="PI" value="3.1415926535897931"/>
+
+	<!-- 3-DOF waist from Gento Skye CAD: prismatic lift + pitch + yaw.
+	     Creates head_mount (no extra rpy; head owns +90° on joint2) and arm_base on body_link3. -->
+	<xacro:macro name="waist" params="collider:='simple' parent_link:='base_link' mount_xyz:='0 0 -0.04' isaac:=false">
+		<link name="body_base">
+			<inertial>
+				<origin xyz="0 0 0"/>
+				<mass value="0.1"/>
+				<inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+			</inertial>
+			<visual>
+				<geometry>
+					<mesh filename="file://$(find gento_skye_description)/meshes/waist/base.glb"/>
+				</geometry>
+			</visual>
+		</link>
+		<joint name="body_fixed_joint" type="fixed">
+			<origin xyz="${mount_xyz}"/>
+			<parent link="${parent_link}"/>
+			<child link="body_base"/>
+		</joint>
+
+		<link name="body_link1">
+			<inertial>
+				<origin xyz="-0.043051 -0.00099026 -0.0031441"/>
+				<mass value="6.0547"/>
+				<inertia
+						ixx="0.013887" ixy="0.00025825" ixz="-0.0014717"
+						iyy="0.041848" iyz="1.8808E-05" izz="0.03664"/>
+			</inertial>
+			<visual>
+				<geometry>
+					<mesh filename="file://$(find gento_skye_description)/meshes/waist/link1.glb"/>
+				</geometry>
+			</visual>
+			<xacro:if value="${collider == 'convex'}">
+				<collision>
+					<geometry>
+						<mesh filename="file://$(find gento_skye_description)/meshes/waist/link1.glb"/>
+					</geometry>
+				</collision>
+			</xacro:if>
+			<xacro:if value="${collider == 'simple'}">
+				<collision>
+					<origin xyz="0 0 0.05"/>
+					<geometry>
+						<cylinder length="0.2" radius="0.06"/>
+					</geometry>
+				</collision>
+			</xacro:if>
+		</link>
+
+		<joint name="body_joint1" type="prismatic">
+			<origin xyz="0.18048 0 0.33"/>
+			<parent link="body_base"/>
+			<child link="body_link1"/>
+			<axis xyz="0 0 1"/>
+			<limit lower="0" upper="0.86" effort="194" velocity="0.2"/>
+		</joint>
+
+		<link name="body_link2">
+			<inertial>
+				<origin xyz="0.0026414 0.02235 -0.0012175"/>
+				<mass value="5.3538"/>
+				<inertia
+						ixx="0.04609582" ixy="0.00043467" ixz="1.785E-05"
+						iyy="0.04430159" iyz="0.00014534" izz="0.02076499"/>
+			</inertial>
+			<visual>
+				<geometry>
+					<mesh filename="file://$(find gento_skye_description)/meshes/waist/link2.glb"/>
+				</geometry>
+			</visual>
+			<xacro:if value="${collider == 'convex'}">
+				<collision>
+					<geometry>
+						<mesh filename="file://$(find gento_skye_description)/meshes/waist/link2.glb"/>
+					</geometry>
+				</collision>
+			</xacro:if>
+			<xacro:if value="${collider == 'simple'}">
+				<collision>
+					<origin xyz="0 0 0"/>
+					<geometry>
+						<box size="0.12 0.16 0.12"/>
+					</geometry>
+				</collision>
+			</xacro:if>
+		</link>
+
+		<joint name="body_joint2" type="revolute">
+			<origin xyz="0 0 0" rpy="${PI/2} 0 0"/>
+			<parent link="body_link1"/>
+			<child link="body_link2"/>
+			<axis xyz="0 0 1"/>
+			<limit lower="-${PI/2}" upper="0" effort="194" velocity="${PI}"/>
+		</joint>
+
+		<link name="body_link3">
+			<inertial>
+				<origin xyz="0.0041391 9.144E-05 0.34664435"/>
+				<mass value="17.4767"/>
+				<inertia
+						ixx="0.36345315" ixy="-0.00022069" ixz="0.00340584"
+						iyy="0.33755628" iyz="-0.00018698" izz="0.16205022"/>
+			</inertial>
+			<visual>
+				<geometry>
+					<mesh filename="file://$(find gento_skye_description)/meshes/waist/link3.glb"/>
+				</geometry>
+			</visual>
+			<xacro:if value="${collider == 'convex'}">
+				<collision>
+					<geometry>
+						<mesh filename="file://$(find gento_skye_description)/meshes/waist/link3.glb"/>
+					</geometry>
+				</collision>
+			</xacro:if>
+			<xacro:if value="${collider == 'simple'}">
+				<collision>
+					<origin xyz="0 0 0.32"/>
+					<geometry>
+						<box size="0.22 0.32 0.64"/>
+					</geometry>
+				</collision>
+			</xacro:if>
+		</link>
+
+		<link name="body_camera1">
+			<xacro:unless value="${isaac}">
+				<visual>
+					<geometry>
+						<mesh filename="file://$(find sensor_models)/meshes/orbbec/335Lg.glb"/>
+					</geometry>
+				</visual>
+			</xacro:unless>
+		</link>
+
+		<joint name="body_camera1_joint" type="fixed">
+			<origin xyz="0.13265 0.047423 0.27217" rpy="${-105/180*PI} 0 ${-PI/2}"/>
+			<parent link="body_link3"/>
+			<child link="body_camera1"/>
+		</joint>
+
+
+		<joint name="body_joint3" type="revolute">
+			<origin xyz="0 0 0" rpy="-${PI/2} 0 0"/>
+			<parent link="body_link2"/>
+			<child link="body_link3"/>
+			<axis xyz="0 0 1"/>
+			<limit lower="-0.4363" upper="0.4363" effort="194" velocity="${PI}"/>
+		</joint>
+
+		<link name="head_mount"/>
+		<joint name="head_mount_joint" type="fixed">
+			<origin xyz="-0.0135 0 0.648"/>
+			<parent link="body_link3"/>
+			<child link="head_mount"/>
+		</joint>
+
+		<link name="arm_base"/>
+		<joint name="arm_base_joint" type="fixed">
+			<origin xyz="0 0 0"/>
+			<parent link="body_link3"/>
+			<child link="arm_base"/>
+		</joint>
+	</xacro:macro>
+
+</robot>

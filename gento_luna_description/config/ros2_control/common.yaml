@@ -1,0 +1,166 @@
+# Gento Luna controller defaults.
+#
+#   split_body:
+#     - 臂：ocs2_arm_controller（14-DOF，home 参考 m6_ccs）
+#     - 躯干：body_joint_controller（6-DOF 串联，无棱柱升降）
+#     - 头：head_joint_controller
+#   full_body:
+#     - ocs2_wbc_controller（[body×6 | left×7 | right×7 | head×2]）
+#     - 躯干/臂/头 home 与分体同一套构型对齐
+
+controller_manager:
+  ros__parameters:
+    update_rate: 100
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    ocs2_arm_controller:
+      type: ocs2_arm_controller/Ocs2ArmController
+
+    ocs2_wbc_controller:
+      type: ocs2_wbc_controller/Ocs2WbcController
+
+    body_joint_controller:
+      type: basic_joint_controller/BasicJointController
+
+    head_joint_controller:
+      type: basic_joint_controller/BasicJointController
+
+ocs2_arm_controller:
+  ros__parameters:
+    update_rate: 100
+    mpc_frequency: 50
+    robot_name: gento_luna
+    info_file_name: task_arm
+    joints:
+      - left_joint1
+      - left_joint2
+      - left_joint3
+      - left_joint4
+      - left_joint5
+      - left_joint6
+      - left_joint7
+      - right_joint1
+      - right_joint2
+      - right_joint3
+      - right_joint4
+      - right_joint5
+      - right_joint6
+      - right_joint7
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+    home_duration: 5.0
+    movej_interpolation_type: doubles
+    home_interpolation_type: doubles
+    cartesian_defaults:
+      frame_id: arm_base
+      ik_type: AUTO
+      max_linear_velocity: 0.3
+      max_linear_acceleration: 1.0
+      max_linear_jerk: 5.0
+      max_angular_velocity: 0.5
+      max_angular_acceleration: 1.0
+      max_angular_jerk: 5.0
+    home_1: [1.457133809892805, -1.0633699963902674, -1.1994065285584414, -0.8074199090303408, -0.6949558811978124, -0.6864381599253574, -0.1295225067208675,
+             -1.457133809892805, -1.0633699963902674, 1.1994065285584414, -0.8074199090303408, 0.6949558811978124, -0.6864381599253574, 0.1295225067208675]
+    home_2: [2.502, -1.528, -1.562, -1.680, 0.0, -0.787, 0.0,
+             -2.502, -1.528, 1.562, -1.680, 0.0, -0.787, 0.0]
+
+ocs2_wbc_controller:
+  ros__parameters:
+    update_rate: 100
+    mpc_frequency: 50
+    robot_name: gento_luna
+    info_file_name: task
+    # [body 1–6 | left 1–7 | right 1–7 | head 1–2]
+    joints:
+      - body_joint1
+      - body_joint2
+      - body_joint3
+      - body_joint4
+      - body_joint5
+      - body_joint6
+      - left_joint1
+      - left_joint2
+      - left_joint3
+      - left_joint4
+      - left_joint5
+      - left_joint6
+      - left_joint7
+      - right_joint1
+      - right_joint2
+      - right_joint3
+      - right_joint4
+      - right_joint5
+      - right_joint6
+      - right_joint7
+      - head_joint1
+      - head_joint2
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+    home_duration: 5.0
+    movej_interpolation_type: doubles
+    waist_lifting_enabled: false
+    cartesian_defaults:
+      frame_id: arm_base
+      ik_type: AUTO
+      max_linear_velocity: 0.3
+      max_linear_acceleration: 1.0
+      max_linear_jerk: 5.0
+      max_angular_velocity: 0.5
+      max_angular_acceleration: 1.0
+      max_angular_jerk: 5.0
+    # body: CAD 直立零位；臂 = m6_ccs home_1
+    home_1: [0.0,  0.5, -1.0, 0.5, 0.0, 0.0,
+             1.457133809892805, -1.0633699963902674, -1.1994065285584414, -0.8074199090303408, -0.6949558811978124, -0.6864381599253574, -0.1295225067208675,
+             -1.457133809892805, -1.0633699963902674, 1.1994065285584414, -0.8074199090303408, 0.6949558811978124, -0.6864381599253574, 0.1295225067208675,
+             0.0, 0.0]
+    # body: j2/j3/j4 = α/−2α/α 下蹲；臂 = m6_ccs home_2
+    home_2: [0.0, 0.40, -0.80, 0.40, 0.0, 0.0,
+             2.502, -1.528, -1.562, -1.680, 0.0, -0.787, 0.0,
+             -2.502, -1.528, 1.562, -1.680, 0.0, -0.787, 0.0,
+             0.0, 0.0]
+
+body_joint_controller:
+  ros__parameters:
+    update_rate: 100
+    joints:
+      - body_joint1
+      - body_joint2
+      - body_joint3
+      - body_joint4
+      - body_joint5
+      - body_joint6
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    home_duration: 5.0
+    movej_duration: 2.0
+    movej_interpolation_type: doubles
+    home_interpolation_type: doubles
+    home_1: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    home_2: [0.0, 0.40, -0.80, 0.40, 0.0, 0.0]
+    waist_lifting_enabled: false
+
+head_joint_controller:
+  ros__parameters:
+    update_rate: 100
+    joints:
+      - head_joint1
+      - head_joint2
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    home_duration: 5.0
+    movej_duration: 5.0
+    home_1: [0.0, 0.0]
+    home_2: [0.0, 0.0]

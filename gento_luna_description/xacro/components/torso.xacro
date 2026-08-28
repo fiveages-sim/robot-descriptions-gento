@@ -1,0 +1,270 @@
+<?xml version="1.0"?>
+<robot name="Gento Luna Torso" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+	<xacro:property name="PI" value="3.1415926535897931"/>
+
+	<!-- 6-DOF torso chain from Gento Luna CAD (Leg_J1–J6).
+	     Creates head_mount (90° pre-rotation absorbed) and arm_base on body_link6. -->
+	<xacro:macro name="torso" params="collider:='simple' parent_link:='base_link' mount_xyz:='0.107 0 0.02'">
+		<link name="body_base">
+			<inertial>
+				<origin xyz="0 0 0"/>
+				<mass value="0.1"/>
+				<inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+			</inertial>
+			<visual>
+				<geometry>
+					<mesh filename="file://$(find gento_luna_description)/meshes/torso/base.glb"/>
+				</geometry>
+			</visual>
+		</link>
+		<joint name="body_fixed_joint" type="fixed">
+			<origin xyz="${mount_xyz}"/>
+			<parent link="${parent_link}"/>
+			<child link="body_base"/>
+		</joint>
+
+		<link name="body_link1">
+			<inertial>
+				<origin xyz="-0.00305605 0.11879615 0.00090574"/>
+				<mass value="6.042"/>
+				<inertia
+						ixx="0.13541951" ixy="-0.00304381" ixz="0.00002039"
+						iyy="0.011899" iyz="0.00029731" izz="0.13138323"/>
+			</inertial>
+			<visual>
+				<geometry>
+					<mesh filename="file://$(find gento_luna_description)/meshes/torso/link1.glb"/>
+				</geometry>
+			</visual>
+			<xacro:if value="${collider == 'convex'}">
+				<collision>
+					<geometry>
+						<mesh filename="file://$(find gento_luna_description)/meshes/torso/link1.glb"/>
+					</geometry>
+				</collision>
+			</xacro:if>
+			<xacro:if value="${collider == 'simple'}">
+				<collision>
+					<origin xyz="0 0.08 0" rpy="${PI/2} 0 0"/>
+					<geometry>
+						<cylinder length="0.2" radius="0.07"/>
+					</geometry>
+				</collision>
+			</xacro:if>
+		</link>
+
+		<joint name="body_joint1" type="revolute">
+			<origin xyz="0 0 0.1" rpy="${PI/2} 0 ${PI/2}"/>
+			<parent link="body_base"/>
+			<child link="body_link1"/>
+			<axis xyz="0 0 1"/>
+			<limit lower="-0.19199" upper="0.19199" effort="217" velocity="3.5605"/>
+		</joint>
+
+		<link name="body_link2">
+			<inertial>
+				<origin xyz="-0.00305605 0.11879615 0.00090574"/>
+				<mass value="6.04185968"/>
+				<inertia
+						ixx="0.43952038" ixy="0.00264772" ixz="0.00003002"
+						iyy="0.02664581" iyz="0.01501651" izz="0.43711033"/>
+			</inertial>
+			<visual>
+				<geometry>
+					<mesh filename="file://$(find gento_luna_description)/meshes/torso/link2.glb"/>
+				</geometry>
+			</visual>
+			<xacro:if value="${collider == 'convex'}">
+				<collision>
+					<geometry>
+						<mesh filename="file://$(find gento_luna_description)/meshes/torso/link2.glb"/>
+					</geometry>
+				</collision>
+			</xacro:if>
+			<xacro:if value="${collider == 'simple'}">
+				<collision>
+					<origin xyz="0 0.15 0" rpy="${PI/2} 0 0"/>
+					<geometry>
+						<cylinder length="0.3" radius="0.07"/>
+					</geometry>
+				</collision>
+			</xacro:if>
+		</link>
+
+		<joint name="body_joint2" type="revolute">
+			<origin xyz="0 0.165 0" rpy="0 -${PI/2} 0"/>
+			<parent link="body_link1"/>
+			<child link="body_link2"/>
+			<axis xyz="0 0 1"/>
+			<limit lower="-${PI/2}" upper="${PI/2}" effort="217" velocity="3.5605"/>
+		</joint>
+
+		<link name="body_link3">
+			<inertial>
+				<origin xyz="-0.00357006 0.14573557 -0.00024996"/>
+				<mass value="4.67121672"/>
+				<inertia
+						ixx="0.01093259" ixy="0.00003321" ixz="-0.00007126"
+						iyy="0.03862616" iyz="-0.00000616" izz="0.03693718"/>
+			</inertial>
+			<visual>
+				<geometry>
+					<mesh filename="file://$(find gento_luna_description)/meshes/torso/link3.glb"/>
+				</geometry>
+			</visual>
+			<xacro:if value="${collider == 'convex'}">
+				<collision>
+					<geometry>
+						<mesh filename="file://$(find gento_luna_description)/meshes/torso/link3.glb"/>
+					</geometry>
+				</collision>
+			</xacro:if>
+			<xacro:if value="${collider == 'simple'}">
+				<collision>
+					<origin xyz="0 0.15 0" rpy="${PI/2} 0 0"/>
+					<geometry>
+						<cylinder length="0.3" radius="0.06"/>
+					</geometry>
+				</collision>
+			</xacro:if>
+		</link>
+
+		<joint name="body_joint3" type="revolute">
+			<origin xyz="0 0.3 0"/>
+			<parent link="body_link2"/>
+			<child link="body_link3"/>
+			<axis xyz="0 0 1"/>
+			<limit lower="-2.44346" upper="1.0472" effort="217" velocity="3.5605"/>
+		</joint>
+
+		<link name="body_link4">
+			<inertial>
+				<origin xyz="-0.03690660 -0.00007427 0.301019860"/>
+				<mass value="5.90046349"/>
+				<inertia
+						ixx="0.01093259" ixy="0.00003321" ixz="-0.00007126"
+						iyy="0.03862616" iyz="-0.00000616" izz="0.03693718"/>
+			</inertial>
+			<visual>
+				<geometry>
+					<mesh filename="file://$(find gento_luna_description)/meshes/torso/link4.glb"/>
+				</geometry>
+			</visual>
+			<xacro:if value="${collider == 'convex'}">
+				<collision>
+					<geometry>
+						<mesh filename="file://$(find gento_luna_description)/meshes/torso/link4.glb"/>
+					</geometry>
+				</collision>
+			</xacro:if>
+			<xacro:if value="${collider == 'simple'}">
+				<collision>
+					<origin xyz="0 0.15 0" rpy="${PI/2} 0 0"/>
+					<geometry>
+						<cylinder length="0.3" radius="0.06"/>
+					</geometry>
+				</collision>
+			</xacro:if>
+		</link>
+
+		<joint name="body_joint4" type="revolute">
+			<origin xyz="0 0.3 0"/>
+			<parent link="body_link3"/>
+			<child link="body_link4"/>
+			<axis xyz="0 0 1"/>
+			<limit lower="-0.95993" upper="1.91986" effort="108" velocity="3.5605"/>
+		</joint>
+
+		<link name="body_link5">
+			<inertial>
+				<origin xyz="-0.00154757 0.12766899 -0.01565105"/>
+				<mass value="3.76177572"/>
+				<inertia
+						ixx="0.09652163" ixy="-0.00089293" ixz="-0.00004906"
+						iyy="0.02155599" iyz="-0.00379500" izz="0.08166085"/>
+			</inertial>
+			<visual>
+				<geometry>
+					<mesh filename="file://$(find gento_luna_description)/meshes/torso/link5.glb"/>
+				</geometry>
+			</visual>
+			<xacro:if value="${collider == 'convex'}">
+				<collision>
+					<geometry>
+						<mesh filename="file://$(find gento_luna_description)/meshes/torso/link5.glb"/>
+					</geometry>
+				</collision>
+			</xacro:if>
+			<xacro:if value="${collider == 'simple'}">
+				<collision>
+					<origin xyz="0 0.08 0" rpy="${PI/2} 0 0"/>
+					<geometry>
+						<cylinder length="0.18" radius="0.055"/>
+					</geometry>
+				</collision>
+			</xacro:if>
+		</link>
+
+		<joint name="body_joint5" type="revolute">
+			<origin xyz="0 0 0" rpy="0 ${PI/2} 0"/>
+			<parent link="body_link4"/>
+			<child link="body_link5"/>
+			<axis xyz="0 0 1"/>
+			<limit lower="-0.5236" upper="0.5236" effort="108" velocity="5.236"/>
+		</joint>
+
+		<link name="body_link6">
+			<inertial>
+				<origin xyz="-0.00252318 0.00023889 0.35352016"/>
+				<mass value="7.69392497"/>
+				<inertia
+						ixx="1.05947349" ixy="0.00039762" ixz="-0.00299102"
+						iyy="1.04629026" iyz="0.00056280" izz="0.06683072"/>
+			</inertial>
+			<visual>
+				<geometry>
+					<mesh filename="file://$(find gento_luna_description)/meshes/torso/link6.glb"/>
+				</geometry>
+			</visual>
+			<xacro:if value="${collider == 'convex'}">
+				<collision>
+					<geometry>
+						<mesh filename="file://$(find gento_luna_description)/meshes/torso/link6.glb"/>
+					</geometry>
+				</collision>
+			</xacro:if>
+			<xacro:if value="${collider == 'simple'}">
+				<collision>
+					<origin xyz="0 0 0.28"/>
+					<geometry>
+						<box size="0.22 0.36 0.56"/>
+					</geometry>
+				</collision>
+			</xacro:if>
+		</link>
+
+		<joint name="body_joint6" type="revolute">
+			<origin xyz="0 0 0" rpy="-${PI/2} -${PI/2} 0"/>
+			<parent link="body_link5"/>
+			<child link="body_link6"/>
+			<axis xyz="0 0 1"/>
+			<limit lower="-2.96706" upper="2.96706" effort="108" velocity="5.236"/>
+		</joint>
+
+		<link name="head_mount"/>
+		<joint name="head_mount_joint" type="fixed">
+			<origin xyz="-0.013496 0 0.49898" rpy="${PI/2} 0 0"/>
+			<parent link="body_link6"/>
+			<child link="head_mount"/>
+		</joint>
+
+		<link name="arm_base"/>
+		<joint name="arm_base_joint" type="fixed">
+			<origin xyz="0 0 0"/>
+			<parent link="body_link6"/>
+			<child link="arm_base"/>
+		</joint>
+	</xacro:macro>
+
+</robot>

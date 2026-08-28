@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<robot name="Gento Luna" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+	<xacro:arg name="collider" default="simple"/>
+	<xacro:arg name="chassis_joints_movable" default="false"/>
+	<xacro:arg name="left_tcp_offset_xyz" default="0 0 0"/>
+	<xacro:arg name="left_tcp_offset_rpy" default="0 0 0"/>
+	<xacro:arg name="right_tcp_offset_xyz" default="0 0 0"/>
+	<xacro:arg name="right_tcp_offset_rpy" default="0 0 0"/>
+
+	<xacro:include filename="$(find fiveages_w2_common_description)/xacro/components/linkhou_s2_v2.xacro"/>
+	<xacro:linkhou_s2 joints_movable="$(arg chassis_joints_movable)" collider="$(arg collider)"/>
+
+	<xacro:include filename="$(find gento_luna_description)/xacro/components/torso.xacro"/>
+	<xacro:torso collider="$(arg collider)"/>
+	<xacro:include filename="$(find gento_luna_description)/xacro/components/head.xacro"/>
+	<xacro:head collider="$(arg collider)"/>
+
+	<!-- CAD J1 at y=±0.2146 z=0.3915 on Leg_J6; M6S Lite joint1 coincides with base_link -->
+	<xacro:include filename="$(find m6_ccs_description)/xacro/arm_mount.xacro"/>
+	<xacro:DualArmMount parent="arm_base"
+		left_xyz="0 0.2146 0.3915" right_xyz="0 -0.2146 0.3915"/>
+
+	<xacro:include filename="$(find m6s_lite_ccs_description)/xacro/arm.xacro"/>
+	<xacro:M6S_LITE_CCS name="left"
+		tcp_offset_xyz="$(arg left_tcp_offset_xyz)"
+		tcp_offset_rpy="$(arg left_tcp_offset_rpy)"/>
+	<xacro:M6S_LITE_CCS name="right" direction="-1"
+		tcp_offset_xyz="$(arg right_tcp_offset_xyz)"
+		tcp_offset_rpy="$(arg right_tcp_offset_rpy)"/>
+</robot>

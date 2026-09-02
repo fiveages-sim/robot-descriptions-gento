@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <robot name="Gento Luna" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
+	<!-- topology:=full (default): whole humanoid.
+	     topology:=dual: arms-only tree rooted at arm_base (split_body / demo OCS2 planning). -->
+	<xacro:arg name="topology" default="full"/>
 	<xacro:arg name="collider" default="simple"/>
 	<xacro:arg name="chassis_joints_movable" default="false"/>
 	<xacro:arg name="left_tcp_offset_xyz" default="0 0 0"/>
@@ -8,13 +11,26 @@
 	<xacro:arg name="right_tcp_offset_xyz" default="0 0 0"/>
 	<xacro:arg name="right_tcp_offset_rpy" default="0 0 0"/>
 
-	<xacro:include filename="$(find fiveages_w2_common_description)/xacro/components/linkhou_s2_v2.xacro"/>
-	<xacro:linkhou_s2 joints_movable="$(arg chassis_joints_movable)" collider="$(arg collider)"/>
+	<xacro:property name="topology_arg" value="$(arg topology)"/>
 
-	<xacro:include filename="$(find gento_luna_description)/xacro/components/torso.xacro"/>
-	<xacro:torso collider="$(arg collider)"/>
-	<xacro:include filename="$(find gento_luna_description)/xacro/components/head.xacro"/>
-	<xacro:head collider="$(arg collider)"/>
+	<xacro:unless value="${topology_arg == 'dual'}">
+		<xacro:include filename="$(find fiveages_w2_common_description)/xacro/components/linkhou_s2_v2.xacro"/>
+		<xacro:linkhou_s2 joints_movable="$(arg chassis_joints_movable)" collider="$(arg collider)"/>
+
+		<xacro:include filename="$(find gento_luna_description)/xacro/components/torso.xacro"/>
+		<xacro:torso collider="$(arg collider)"/>
+		<xacro:include filename="$(find gento_luna_description)/xacro/components/head.xacro"/>
+		<xacro:head collider="$(arg collider)"/>
+	</xacro:unless>
+
+	<xacro:if value="${topology_arg == 'dual'}">
+		<link name="base_link"/>
+		<link name="arm_base"/>
+		<joint name="arm_base_joint" type="fixed">
+			<parent link="base_link"/>
+			<child link="arm_base"/>
+		</joint>
+	</xacro:if>
 
 	<!-- CAD J1 at y=±0.2146 z=0.3915 on Leg_J6; M6S Lite joint1 coincides with base_link -->
 	<xacro:include filename="$(find m6_ccs_description)/xacro/arm_mount.xacro"/>

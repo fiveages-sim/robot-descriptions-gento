@@ -1,6 +1,9 @@
-; OCS2 Dual-Arm Configuration - gento_luna (demo)
-; demo → ocs2_arm_controller (info_file_name:=task_arm)
-; 14 arm DOF, root arm_base.
+; OCS2 Dual-Arm Configuration - gento_luna (demo / split_body)
+; demo|split_body → ocs2_arm_controller (info_file_name:=task_arm)
+; Planning URDF: gento_luna xacro topology:=dual (arm_base root, 14 DOF).
+; baseFrame must match Pinocchio model root (arm_base ≈ base_link); do not use
+; the full humanoid URDF here — oMf is world-root and markers would double-count
+; the live arm_base→base_footprint TF (~0.9 m sky offset).
 
 model_information {
   manipulatorModelType     0
@@ -8,22 +11,6 @@ model_information {
   removeJoints {
       [0]  "left_gripper_joint"
       [1]  "right_gripper_joint"
-      [2]  "rr_steer_joint"
-      [3]  "rr_wheel_joint"
-      [4]  "rl_steer_joint"
-      [5]  "rl_wheel_joint"
-      [6]  "fr_steer_joint"
-      [7]  "fr_wheel_joint"
-      [8]  "fl_steer_joint"
-      [9]  "fl_wheel_joint"
-      [10] "head_joint1"
-      [11] "head_joint2"
-      [12] "body_joint1"
-      [13] "body_joint2"
-      [14] "body_joint3"
-      [15] "body_joint4"
-      [16] "body_joint5"
-      [17] "body_joint6"
   }
 
   baseFrame                       "arm_base"

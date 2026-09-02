@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <robot name="Gento Skye" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
+	<!-- topology:=full (default): whole humanoid.
+	     topology:=dual: arms-only tree rooted at arm_base (split_body / demo OCS2 planning). -->
+	<xacro:arg name="topology" default="full"/>
 	<xacro:arg name="collider" default="simple"/>
 	<xacro:arg name="chassis_joints_movable" default="false"/>
 	<xacro:arg name="eef_fixed_joints" default="false"/>
@@ -12,6 +15,7 @@
 	<xacro:arg name="right_tcp_offset_xyz" default="0 0 0"/>
 	<xacro:arg name="right_tcp_offset_rpy" default="0 0 0"/>
 
+	<xacro:property name="topology_arg" value="$(arg topology)"/>
 	<xacro:property name="type_arg" value="$(arg type)"/>
 	<xacro:property name="left_type_arg" value="$(arg left_type)"/>
 	<xacro:property name="right_type_arg" value="$(arg right_type)"/>
@@ -22,13 +26,24 @@
 	<xacro:set_side_eef_types side="left" type_key="${effective_left_type}"/>
 	<xacro:set_side_eef_types side="right" type_key="${effective_right_type}"/>
 
-	<xacro:include filename="$(find fiveages_w2_common_description)/xacro/components/linkhou_s2_v2.xacro"/>
-	<xacro:linkhou_s2 joints_movable="$(arg chassis_joints_movable)" collider="$(arg collider)"/>
+	<xacro:unless value="${topology_arg == 'dual'}">
+		<xacro:include filename="$(find fiveages_w2_common_description)/xacro/components/linkhou_s2_v2.xacro"/>
+		<xacro:linkhou_s2 joints_movable="$(arg chassis_joints_movable)" collider="$(arg collider)"/>
 
-	<xacro:include filename="$(find gento_skye_description)/xacro/components/waist.xacro"/>
-	<xacro:waist collider="$(arg collider)"/>
-	<xacro:include filename="$(find gento_skye_description)/xacro/components/head.xacro"/>
-	<xacro:head collider="$(arg collider)"/>
+		<xacro:include filename="$(find gento_skye_description)/xacro/components/waist.xacro"/>
+		<xacro:waist collider="$(arg collider)"/>
+		<xacro:include filename="$(find gento_skye_description)/xacro/components/head.xacro"/>
+		<xacro:head collider="$(arg collider)"/>
+	</xacro:unless>
+
+	<xacro:if value="${topology_arg == 'dual'}">
+		<link name="base_link"/>
+		<link name="arm_base"/>
+		<joint name="arm_base_joint" type="fixed">
+			<parent link="base_link"/>
+			<child link="arm_base"/>
+		</joint>
+	</xacro:if>
 
 	<!-- CAD J1 at y=±0.2305 z=0.4335 on waist_Link_3; M6-CCS joint1 is 0.1745 along base Z
 	     → DualArmMount y = ±(0.2305 - 0.1745) = ±0.056 -->

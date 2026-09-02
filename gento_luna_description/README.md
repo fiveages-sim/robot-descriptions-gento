@@ -28,8 +28,8 @@ ros2 launch ocs2_arm_controller full_body.launch.py robot:=gento_luna
 
 默认 `hardware:=mock_components`。
 
-分体：臂 `ocs2_arm_controller`（home 参考 M6-CCS）+ 躯干 `body_joint_controller` + 头 `head_joint_controller`。  
-全身：`ocs2_wbc_controller`，躯干/臂/头与分体同一套 home 对齐。
+分体 / demo：臂 `ocs2_arm_controller`（规划 URDF 为 `topology:=dual`，以 `arm_base` 为根）+ 躯干 `body_joint_controller` + 头 `head_joint_controller`。  
+全身：`ocs2_wbc_controller`（整机规划，`base_footprint`），躯干/臂/头与分体同一套 home 对齐。
 
 | Home | 躯干 `[j1…j6]` | 臂 |
 |------|----------------|-----|

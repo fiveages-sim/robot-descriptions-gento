@@ -30,8 +30,8 @@ ros2 launch ocs2_arm_controller full_body.launch.py robot:=gento_skye
 
 默认 `hardware:=mock_components`。
 
-分体：臂 `ocs2_arm_controller`（home 与 M6-CCS 相同）+ 腰 `body_joint_controller` + 头 `head_joint_controller`。  
-全身：`ocs2_wbc_controller`，腰/臂/头与分体同一套 home 对齐。
+分体 / demo：臂 `ocs2_arm_controller`（规划 URDF 为 `topology:=dual`，以 `arm_base` 为根）+ 腰 `body_joint_controller` + 头 `head_joint_controller`。  
+全身：`ocs2_wbc_controller`（整机规划，`base_footprint`），腰/臂/头与分体同一套 home 对齐。
 
 | Home | 腰 `[lift, pitch, yaw]` | 臂 |
 |------|-------------------------|-----|

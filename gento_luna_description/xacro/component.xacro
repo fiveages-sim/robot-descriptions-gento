@@ -1,17 +1,27 @@
 <?xml version="1.0" ?>
-<robot name="Gento Luna" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="Luna" xmlns:xacro="http://www.ros.org/wiki/xacro">
+	<!-- Component: head, torso, body (torso + head). isaac:=true hides camera/sensor meshes. -->
 	<xacro:arg name="type" default="head"/>
 	<xacro:arg name="collider" default="simple"/>
+	<xacro:arg name="isaac" default="true"/>
 
 	<xacro:if value="${'$(arg type)' == 'head'}">
 		<link name="head_mount"/>
 		<xacro:include filename="$(find gento_luna_description)/xacro/components/head.xacro"/>
-		<xacro:head collider="$(arg collider)"/>
+		<xacro:head collider="$(arg collider)" isaac="$(arg isaac)"/>
 	</xacro:if>
 
 	<xacro:if value="${'$(arg type)' == 'torso'}">
 		<link name="base_link"/>
 		<xacro:include filename="$(find gento_luna_description)/xacro/components/torso.xacro"/>
-		<xacro:torso collider="$(arg collider)"/>
+		<xacro:torso collider="$(arg collider)" isaac="$(arg isaac)"/>
+	</xacro:if>
+
+	<xacro:if value="${'$(arg type)' == 'body'}">
+		<link name="base_link"/>
+		<xacro:include filename="$(find gento_luna_description)/xacro/components/torso.xacro"/>
+		<xacro:torso collider="$(arg collider)" isaac="$(arg isaac)"/>
+		<xacro:include filename="$(find gento_luna_description)/xacro/components/head.xacro"/>
+		<xacro:head collider="$(arg collider)" isaac="$(arg isaac)"/>
 	</xacro:if>
 </robot>

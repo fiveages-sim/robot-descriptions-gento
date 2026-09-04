@@ -16,6 +16,13 @@ source install/setup.bash
 ros2 launch robot_common_launch humanoid.launch.py robot:=gento_skye collider:=simple
 ros2 launch robot_common_launch component.launch.py robot:=gento_skye type:=head
 ros2 launch robot_common_launch component.launch.py robot:=gento_skye type:=waist
+ros2 launch robot_common_launch component.launch.py robot:=gento_skye type:=body
+```
+
+`type:=body` 为腰 + 头。组件默认 `isaac:=true`（不显示相机等 sensor mesh）；要看传感器外形时传 `xacro_isaac:=false`：
+
+```bash
+ros2 launch robot_common_launch component.launch.py robot:=gento_skye type:=body xacro_isaac:=false
 ```
 
 带末端：`type:=rg75`（键名见 m6_ccs README）。

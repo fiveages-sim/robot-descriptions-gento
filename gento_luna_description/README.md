@@ -16,6 +16,13 @@ source install/setup.bash
 ros2 launch robot_common_launch humanoid.launch.py robot:=gento_luna collider:=simple
 ros2 launch robot_common_launch component.launch.py robot:=gento_luna type:=head
 ros2 launch robot_common_launch component.launch.py robot:=gento_luna type:=torso
+ros2 launch robot_common_launch component.launch.py robot:=gento_luna type:=body
+```
+
+`type:=body` 为躯干 + 头。组件默认 `isaac:=true`（不显示相机等 sensor mesh）；要看传感器外形时传 `xacro_isaac:=false`：
+
+```bash
+ros2 launch robot_common_launch component.launch.py robot:=gento_luna type:=body xacro_isaac:=false
 ```
 
 ## Control

@@ -4,7 +4,7 @@
 	<xacro:property name="PI" value="3.1415926535897931"/>
 
 	<!-- 2-DOF yaw/pitch from Skye CAD. Mount xyz (no extra rpy) is owned by waist. -->
-	<xacro:macro name="head" params="collider:='simple'">
+	<xacro:macro name="head" params="collider:='simple' isaac:=false">
 		<link name="head_link1">
 			<inertial>
 				<origin xyz="-0.00036181 -0.012522 -0.017538"/>

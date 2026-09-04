@@ -5,7 +5,7 @@
 
 	<!-- 6-DOF torso chain from Gento Luna CAD (Leg_J1–J6).
 	     Creates head_mount (90° pre-rotation absorbed) and arm_base on body_link6. -->
-	<xacro:macro name="torso" params="collider:='simple' parent_link:='base_link' mount_xyz:='0.107 0 0.02'">
+	<xacro:macro name="torso" params="collider:='simple' parent_link:='base_link' mount_xyz:='0.107 0 0.02' isaac:=false">
 		<link name="body_base">
 			<inertial>
 				<origin xyz="0 0 0"/>

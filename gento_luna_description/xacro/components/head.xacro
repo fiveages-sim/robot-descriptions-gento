@@ -4,7 +4,7 @@
 	<xacro:property name="PI" value="3.1415926535897931"/>
 
 	<!-- 2-DOF yaw/pitch from Luna CAD. Mount xyz+rpy (incl. +90° about X) is owned by torso. -->
-	<xacro:macro name="head" params="collider:='simple'">
+	<xacro:macro name="head" params="collider:='simple' isaac:=false">
 		<link name="head_link1">
 			<inertial>
 				<origin xyz="9.4918E-07 0.017441 -0.0043026"/>

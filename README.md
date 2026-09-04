@@ -12,6 +12,6 @@ Gento 轮式人形：两套整机共用 Linkhou S2 v2 底盘，头部、躯干�
 ```bash
 ros2 launch robot_common_launch humanoid.launch.py robot:=gento_skye collider:=simple
 ros2 launch robot_common_launch humanoid.launch.py robot:=gento_luna collider:=simple
-ros2 launch robot_common_launch component.launch.py robot:=gento_skye type:=head
-ros2 launch robot_common_launch component.launch.py robot:=gento_luna type:=head
+ros2 launch robot_common_launch component.launch.py robot:=gento_skye type:=body
+ros2 launch robot_common_launch component.launch.py robot:=gento_luna type:=body
 ```

@@ -63,7 +63,11 @@ initialModeSchedule
     eventTimes {}
     modeSequence
     {
-        [0]     HM_DUAL_CUSTOM_LOCK_FIXED_BASE
+        [0]
+        {
+            bodyMode "HM_DUAL_CUSTOM_LOCK_FIXED_BASE"
+            headMode "HEAD_DISABLE"
+        }
     }
 }
 
